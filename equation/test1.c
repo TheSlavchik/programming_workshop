@@ -1,12 +1,12 @@
 #include "equation.h"
-#include <stdio.h>
 #include <assert.h>
 #include <math.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 void test_1()
 {
-    double a,b,c = 0;
+    double a, b, c = 0;
 
     double res = solve_equation(a, b, c)[0];
 
@@ -19,7 +19,7 @@ void test_2()
     double b = 0;
     double c = -1;
 
-    double * res = solve_equation(a, b, c);
+    double *res = solve_equation(a, b, c);
 
     assert(res[0] == 2);
     assert(res[1] == -1);
@@ -32,7 +32,7 @@ void test_3()
     double b = 0;
     double c = 0;
 
-    double * res = solve_equation(a, b, c);
+    double *res = solve_equation(a, b, c);
 
     assert(res[0] == 1);
     assert(res[1] == 0);
@@ -44,7 +44,7 @@ void test_4()
     double b = 0;
     double c = 1;
 
-    double * res = solve_equation(a, b, c);
+    double *res = solve_equation(a, b, c);
 
     assert(res[0] == 0);
 }
@@ -55,7 +55,7 @@ void test_5()
     double b = 0;
     double c = -1E-7;
 
-    double * res = solve_equation(a, b, c);
+    double *res = solve_equation(a, b, c);
 
     assert(res[0] == 2);
     assert(fabs(res[1] + 3E-4) < 0.0001);
@@ -68,7 +68,7 @@ void test_6()
     double b = -1E+10;
     double c = -1;
 
-    double * res = solve_equation(a, b, c);
+    double *res = solve_equation(a, b, c);
 
     assert(res[0] == 2);
 
@@ -82,7 +82,7 @@ void test_7()
     double b = 0;
     double c = -1e-8;
 
-    double * res = solve_equation(a, b, c);
+    double *res = solve_equation(a, b, c);
 
     assert(res[0] == 1);
 

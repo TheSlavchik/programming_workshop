@@ -14,7 +14,7 @@ double *solve_equation(double a, double b, double c)
     }
 
     D = pow(b, 2) - 4 * a * c;
-    
+
     if (fabs(D) < 1E-7)
     {
         D = 0;
