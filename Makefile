@@ -35,11 +35,26 @@ integral.a: integral.o
 integral_test: test2.o integral.a
 	gcc -g -static -o integral_test test2.o integral.a -lm
 
+# [LINKED_LIST]
+
+test3.o: list/test3.c
+	gcc -g -c list/test3.c -o test3.o
+
+linked_list.o: list/linked_list.c list/linked_list.h
+	gcc -g -c list/linked_list.c -o linked_list.o 
+
+linked_list.a: linked_list.o
+	ar rc linked_list.a linked_list.o
+
+list_test: test3.o linked_list.a
+	gcc -g -static -o list_test test3.o linked_list.a -lm 
+
 # [TESTS]
 
-test: equation_test integral_test
+test: equation_test integral_test list_test
 	./equation_test
 	./integral_test
+	./list_test
 # @if [ -z "$(wildcard *_test)" ]; then \
 	# 	echo "No '_test' found."; \
 	# else \
