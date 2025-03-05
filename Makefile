@@ -49,12 +49,27 @@ linked_list.a: linked_list.o
 list_test: test3.o linked_list.a
 	gcc -g -static -o list_test test3.o linked_list.a -lm 
 
+# [STACK]
+
+test4.o: stack/test4.c
+	gcc -g -c stack/test4.c -o test4.o
+
+stack.o: stack/stack.c stack/stack.h
+	gcc -g -c stack/stack.c -o stack.o 
+
+stack.a: stack.o
+	ar rc stack.a stack.o
+
+stack_test: test4.o stack.a
+	gcc -g -static -o stack_test test4.o stack.a -lm
+
 # [TESTS]
 
-test: equation_test integral_test list_test
+test: equation_test integral_test list_test stack_test
 	./equation_test
 	./integral_test
 	./list_test
+	./stack_test
 # @if [ -z "$(wildcard *_test)" ]; then \
 	# 	echo "No '_test' found."; \
 	# else \
