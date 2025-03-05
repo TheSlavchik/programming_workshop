@@ -12,3 +12,4 @@ test:
 		echo "No '_test' found."; \
 	else \
 		for binary in $(wildcard *_test); do ./$$binary; done; fi
+		
