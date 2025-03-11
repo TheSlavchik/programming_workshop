@@ -2,11 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-double *solve_equation(double a, double b, double c)
+double *solve_equation(double a, double b, double c, double zeroRoundingAccuracy)
 {
     double D, x1, x2;
 
-    if (fabs(a) < 0.00001)
+    if (fabs(a) < zeroRoundingAccuracy)
     {
         double *res = malloc(sizeof(double));
         res[0] = -1;
@@ -15,7 +15,7 @@ double *solve_equation(double a, double b, double c)
 
     D = pow(b, 2) - 4 * a * c;
 
-    if (fabs(D) < 1E-7)
+    if (fabs(D) < zeroRoundingAccuracy)
     {
         D = 0;
     }

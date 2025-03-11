@@ -1,1 +1,1 @@
-double *solve_equation(double a, double b, double c);
+double *solve_equation(double a, double b, double c, double zeroRoundingAccuracy);
