@@ -1,6 +1,7 @@
 #include "equation.h"
 #include <assert.h>
 #include <math.h>
+#include <stdlib.h>
 
 void test_1()
 {
@@ -10,6 +11,7 @@ void test_1()
     double *res = solve_equation(a, b, c, accuracy);
 
     assert(res[0] == -1);
+    free(res);
 }
 
 void test_2()
@@ -24,6 +26,7 @@ void test_2()
     assert(res[0] == 2);
     assert(res[1] == -1);
     assert(res[2] == 1);
+    free(res);
 }
 
 void test_3()
@@ -37,6 +40,7 @@ void test_3()
 
     assert(res[0] == 1);
     assert(res[1] == 0);
+    free(res);
 }
 
 void test_4()
@@ -49,6 +53,7 @@ void test_4()
     double *res = solve_equation(a, b, c, accuracy);
 
     assert(res[0] == 0);
+    free(res);
 }
 
 void test_5()
@@ -63,6 +68,7 @@ void test_5()
     assert(res[0] == 2);
     assert(fabs(res[1] + 3E-4) < 1E-4);
     assert(fabs(res[2] - 3E-4) < 1E-4);
+    free(res);
 }
 
 void test_6()
@@ -78,6 +84,7 @@ void test_6()
 
     assert(fabs(res[1]) < 1E-11);
     assert(fabs(res[2] - 1E+10) < 1E-11);
+    free(res);
 }
 
 void test_7()
@@ -91,6 +98,7 @@ void test_7()
 
     assert(res[0] == 1);
     assert(fabs(res[1]) < 1E-7);
+    free(res);
 }
 
 int main()
