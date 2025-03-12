@@ -1,6 +1,5 @@
 #include "integral.h"
 #include <math.h>
-#include <stdio.h>
 
 double integral(double (*func)(double), double a, double b, int n)
 {

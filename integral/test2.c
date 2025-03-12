@@ -1,7 +1,6 @@
 #include "integral.h"
 #include <assert.h>
 #include <math.h>
-#include <stdio.h>
 
 double x2(double x)
 {
@@ -10,16 +9,16 @@ double x2(double x)
 
 void test_1()
 {
-    double res = integral(x2, 1, 2, 1000);
+    double res = integral(x2, 1, 2, 0);
 
-    assert(fabs(res - 2.33) < 0.01);
+    assert(res == -1);
 }
 
 void test_2()
 {
-    double res = integral(sin, 1, 2, 10000);
+    double res = integral(x2, 1, 2, 1000);
 
-    assert(fabs(res - 0.956) < 0.001);
+    assert(fabs(res - 2.33) < 0.01);
 }
 
 void test_3()
@@ -31,9 +30,9 @@ void test_3()
 
 void test_4()
 {
-    double res = integral(log, 1, 2, 10000);
+    double res = integral(log, 1E-15, 2, 100000);
 
-    assert(fabs(res - 0.386) < 0.001);
+    assert(fabs(res + 0.614) < 0.001);
 }
 
 int main()
