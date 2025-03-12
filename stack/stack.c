@@ -1,47 +1,38 @@
 #include "stack.h"
-#include <stdio.h>
 #include <stdlib.h>
 
-Stack *initialize_stack()
+Stack *initialize_stack(int max_length)
 {
     Stack *stack = malloc(sizeof(Stack));
+    stack->arr = malloc(sizeof(int) * max_length);
+    stack->max_length = max_length;
     stack->len = 0;
+    stack->is_empty = true;
     return stack;
 }
 
-int is_empty(Stack *stack)
+bool is_empty(Stack *stack)
 {
-    if (stack->len == 0)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
+    return stack->is_empty;
 }
 
-int is_full(Stack *stack)
+bool is_full(Stack *stack)
 {
-    if (stack->len == MAX_SIZE)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
+    return stack->len == stack->max_length;
 }
 
 int push(Stack *stack, int value)
 {
-    if (is_full(stack) == 1)
+    if (is_full(stack))
     {
         return -1;
     }
 
     stack->arr[stack->len] = value;
     stack->len++;
+
+    stack->is_empty = false;
+
     return 0;
 }
 
@@ -55,5 +46,16 @@ int pop(Stack *stack)
     int element = stack->arr[stack->len - 1];
     stack->len--;
 
+    if (stack->len == 0)
+    {
+        stack->is_empty = true;
+    }
+
     return element;
+}
+
+void clear(Stack * stack)
+{
+    free(stack->arr);
+    free(stack);
 }
