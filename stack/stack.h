@@ -13,4 +13,4 @@ bool is_empty(Stack *stack);
 bool is_full(Stack *stack);
 int push(Stack *stack, int value);
 int pop(Stack *stack);
-void clear(Stack * stack);
+void clear(Stack *stack);

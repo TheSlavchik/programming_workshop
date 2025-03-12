@@ -54,7 +54,7 @@ int pop(Stack *stack)
     return element;
 }
 
-void clear(Stack * stack)
+void clear(Stack *stack)
 {
     free(stack->arr);
     free(stack);
