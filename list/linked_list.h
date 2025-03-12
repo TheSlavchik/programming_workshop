@@ -16,3 +16,4 @@ int add_by_id(int data, int id, List *list);
 int delete(int data, List *list);
 Node *find_by_id(int id, List *list);
 int count(List *list);
+void clear(List *list);

@@ -15,6 +15,8 @@ void test_1()
     assert(find_by_id(1, list)->data == 4);
     assert(find_by_id(2, list)->data == 5);
     assert(find_by_id(3, list)->data == 6);
+
+    clear(list);
 }
 
 void test_2()
@@ -32,6 +34,8 @@ void test_2()
 
     assert(count(list) == 3);
     assert(find_by_id(0, list)->data == 4);
+
+    clear(list);
 }
 
 void test_3()
@@ -43,6 +47,8 @@ void test_3()
     add_to_end(5, list);
 
     assert(find_by_id(5, list) == NULL);
+
+    clear(list);
 }
 
 void test_4()
@@ -53,6 +59,8 @@ void test_4()
 
     assert(delete (7, list) == -1);
     assert(delete (5, list) == 0);
+
+    clear(list);
 }
 
 void test_5()
@@ -63,6 +71,8 @@ void test_5()
 
     assert(add_by_id(7, 5, list) == -2);
     assert(add_by_id(7, 1, list) == 0);
+
+    clear(list);
 }
 
 int main()

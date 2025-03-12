@@ -1,17 +1,16 @@
 #include "linked_list.h"
-#include <stdio.h>
 #include <stdlib.h>
 
 Node *create_node(int data)
 {
-    Node *newNode = malloc(sizeof(Node));
-    if (!newNode)
+    Node *new_node = malloc(sizeof(Node));
+    if (!new_node)
     {
         return NULL;
     }
-    newNode->data = data;
-    newNode->next = NULL;
-    return newNode;
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
 }
 
 List *make_list()
@@ -93,21 +92,26 @@ int add_by_id(int data, int id, List *list)
 
 int delete(int data, List *list)
 {
-    Node *current = list->head;
-    Node *previous = current;
+    Node *current_node = list->head;
+    Node *previous_node = current_node;
 
-    while (current != NULL)
+    while (current_node != NULL)
     {
-        if (current->data == data)
+        if (current_node->data == data)
         {
-            previous->next = current->next;
-            if (current == list->head)
-                list->head = current->next;
-            free(current);
+            previous_node->next = current_node->next;
+
+            if (current_node == list->head)
+            {
+                list->head = current_node->next;
+            }
+
+            free(current_node);
+
             return 0;
         }
-        previous = current;
-        current = current->next;
+        previous_node = current_node;
+        current_node = current_node->next;
     }
 
     return -1;
@@ -149,4 +153,21 @@ int count(List *list)
     }
 
     return count;
+}
+
+void clear(List *list)
+{
+    Node *current_node = list->head;
+    Node *next_node = current_node;
+
+    while (next_node != NULL)
+    {
+        next_node = current_node->next;
+
+        free(current_node);
+
+        current_node = next_node;
+    }
+
+    free(list);
 }
