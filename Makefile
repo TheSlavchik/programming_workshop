@@ -25,4 +25,3 @@ equation_test: test1.o equation.a
 
 test: equation_test
 	./equation_test
-		
