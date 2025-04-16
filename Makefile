@@ -7,7 +7,7 @@ fmt:
 check_fmt:
 	clang-format -style=Microsoft -i `find -regex ".+\.[ch]"` --dry-run --Werror
 
-# [INTEGRAL]
+# [POOL ALLOCATOR]
 
 pool_allocator_test.o: pool_allocator/pool_allocator_test.c
 	gcc -g -c pool_allocator/pool_allocator_test.c -o pool_allocator_test.o
