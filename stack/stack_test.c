@@ -1,21 +1,30 @@
 #include "stack.h"
 #include <assert.h>
+#include <stdlib.h>
 
-void test_1()
+void stack_pop_test()
 {
     Stack *stack = initialize_stack(100);
 
     push(stack, 13);
     push(stack, 37);
 
-    assert(pop(stack) == 37);
-    assert(pop(stack) == 13);
-    assert(pop(stack) == STACK_IS_EMPTY);
+    int *element1 = malloc(sizeof(int));
+    int *element2 = malloc(sizeof(int));
+    int *element3 = malloc(sizeof(int));
+
+    pop(stack, element1);
+    pop(stack, element2);
+    pop(stack, element3);
+
+    assert(element1[0] == 37);
+    assert(element2[0] == 13);
+    assert(pop(stack, element3) == STACK_IS_EMPTY);
 
     clear(stack);
 }
 
-void test_2()
+void stack_overflow_test()
 {
     Stack *stack = initialize_stack(10);
 
@@ -36,8 +45,8 @@ void test_2()
 
 int main()
 {
-    test_1();
-    test_2();
+    stack_pop_test();
+    stack_overflow_test();
 
     return 0;
 }

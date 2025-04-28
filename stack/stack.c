@@ -7,13 +7,12 @@ Stack *initialize_stack(int max_length)
     stack->arr = malloc(sizeof(int) * max_length);
     stack->max_length = max_length;
     stack->len = 0;
-    stack->is_empty = true;
     return stack;
 }
 
 bool is_empty(Stack *stack)
 {
-    return stack->is_empty;
+    return stack->len == 0;
 }
 
 bool is_full(Stack *stack)
@@ -31,27 +30,20 @@ int push(Stack *stack, int value)
     stack->arr[stack->len] = value;
     stack->len++;
 
-    stack->is_empty = false;
-
     return 0;
 }
 
-int pop(Stack *stack)
+int pop(Stack *stack, int *element)
 {
     if (is_empty(stack))
     {
         return STACK_IS_EMPTY;
     }
 
-    int element = stack->arr[stack->len - 1];
+    element[0] = stack->arr[stack->len - 1];
     stack->len--;
 
-    if (stack->len == 0)
-    {
-        stack->is_empty = true;
-    }
-
-    return element;
+    return 0;
 }
 
 void clear(Stack *stack)
