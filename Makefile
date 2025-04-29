@@ -7,9 +7,21 @@ fmt:
 check_fmt:
 	clang-format -style=Microsoft -i `find -regex ".+\.[ch]"` --dry-run --Werror
 
-test: 
-	@if [ -z "$(wildcard *_test)" ]; then \
-		echo "No '_test' found."; \
-	else \
-		for binary in $(wildcard *_test); do ./$$binary; done; fi
-		
+# [EQUATION]
+
+test1.o: equation/test1.c
+	gcc -g -c equation/test1.c -o test1.o
+
+equation.o: equation/equation.c equation/equation.h
+	gcc -g -c equation/equation.c -o equation.o 
+
+equation.a: equation.o
+	ar rc equation.a equation.o
+
+equation_test: test1.o equation.a
+	gcc -g -static -o equation_test test1.o equation.a -lm
+
+# [TEST]
+
+test: equation_test
+	./equation_test
