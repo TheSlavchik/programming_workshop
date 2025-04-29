@@ -1,64 +1,56 @@
+#include "equation.h"
 #include <math.h>
-#include <stdio.h>
 #include <stdlib.h>
 
-double *solve_equation(double a, double b, double c, double eps_a, double eps_D)
+int solve_equation(double a, double b, double c, double eps, double **res)
 {
     double D, x1, x2;
 
-    if (fabs(a) < eps_a)
+    if (fabs(a) < eps)
     {
-        double *res = malloc(sizeof(double));
-        res[0] = -1;
-        return res;
+        return A_EQUALS_ZERO;
     }
 
     D = pow(b, 2) - 4 * a * c;
 
-    if (fabs(D) < eps_D)
+    if (fabs(D) < eps)
     {
         D = 0;
     }
 
     if (D < 0)
     {
-        double *arr = malloc(sizeof(double) * 1);
-
-        arr[0] = 0;
-
-        return arr;
+        return NO_ROOTS;
     }
     else if (D == 0)
     {
-        x1 = -b / 2 * a;
+        x1 = -b / (2 * a);
 
-        double *arr = malloc(sizeof(double) * 2);
+        *res = malloc(sizeof(double));
 
-        arr[0] = 1;
-        arr[1] = x1;
+        (*res)[0] = x1;
 
-        return arr;
+        return ONE_ROOT;
     }
     else
     {
-        x1 = (-b + sqrt(D)) / 2 * a;
-        x2 = (-b - sqrt(D)) / 2 * a;
+        *res = malloc(sizeof(double) * 2);
 
-        double *arr = malloc(sizeof(double) * 3);
-
-        arr[0] = 2;
+        double q = -0.5 * (b + copysign(sqrt(D), b));
+        x1 = q / a;
+        x2 = c / q;
 
         if (x2 > x1)
         {
-            arr[1] = x1;
-            arr[2] = x2;
+            (*res)[0] = x1;
+            (*res)[1] = x2;
         }
         else
         {
-            arr[1] = x2;
-            arr[2] = x1;
+            (*res)[0] = x2;
+            (*res)[1] = x1;
         }
 
-        return arr;
+        return TWO_ROOTS;
     }
 }

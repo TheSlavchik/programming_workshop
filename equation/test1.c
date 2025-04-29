@@ -1,113 +1,104 @@
 #include "equation.h"
 #include <assert.h>
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-void test_1()
+void zero_a_test()
 {
     double a, b, c = 0;
-    double eps_a = 1E-5;
-    double eps_D = 1E-7;
+    double eps = 1E-7;
+    double *res;
 
-    double *res = solve_equation(a, b, c, eps_a, eps_D);
-
-    assert(res[0] == -1);
+    assert(solve_equation(a, b, c, eps, &res) == -1);
 }
 
-void test_2()
+void two_roots_test()
 {
     double a = 1;
     double b = 0;
     double c = -1;
-    double eps_a = 1E-5;
-    double eps_D = 1E-7;
+    double eps = 1E-7;
+    double *res;
 
-    double *res = solve_equation(a, b, c, eps_a, eps_D);
-
-    assert(res[0] == 2);
-    assert(res[1] == -1);
-    assert(res[2] == 1);
+    assert(solve_equation(a, b, c, eps, &res) == 2);
+    assert(res[0] == -1);
+    assert(res[1] == 1);
+    free(res);
 }
 
-void test_3()
+void one_root_test()
 {
     double a = 1;
     double b = 0;
     double c = 0;
-    double eps_a = 1E-5;
-    double eps_D = 1E-7;
+    double eps = 1E-7;
+    double *res;
 
-    double *res = solve_equation(a, b, c, eps_a, eps_D);
-
-    assert(res[0] == 1);
-    assert(res[1] == 0);
+    assert(solve_equation(a, b, c, eps, &res) == 1);
+    assert(res[0] == 0);
+    free(res);
 }
 
-void test_4()
+void no_roots_test()
 {
     double a = 1;
     double b = 0;
     double c = 1;
-    double eps_a = 1E-5;
-    double eps_D = 1E-7;
+    double eps = 1E-7;
+    double *res;
 
-    double *res = solve_equation(a, b, c, eps_a, eps_D);
-
-    assert(res[0] == 0);
+    assert(solve_equation(a, b, c, eps, &res) == 0);
 }
 
-void test_5()
+void eps_test1()
 {
     double a = 1;
     double b = 0;
     double c = -1E-7;
-    double eps_a = 1E-5;
-    double eps_D = 1E-7;
+    double eps = 1E-7;
+    double *res = NULL;
 
-    double *res = solve_equation(a, b, c, eps_a, eps_D);
-
-    assert(res[0] == 2);
-    assert(fabs(res[1] + 3E-4) < 0.0001);
-    assert(fabs(res[2] - 3E-4) < 0.0001);
+    assert(solve_equation(a, b, c, eps, &res) == 2);
+    assert(fabs(res[0] + 3E-4) < 0.0001);
+    assert(fabs(res[1] - 3E-4) < 0.0001);
+    free(res);
 }
 
-void test_6()
+void eps_test2()
 {
     double a = 1;
     double b = -1E+10;
     double c = -1;
-    double eps_a = 1E-5;
-    double eps_D = 1E-7;
+    double eps = 1E-7;
+    double *res;
 
-    double *res = solve_equation(a, b, c, eps_a, eps_D);
-
-    assert(res[0] == 2);
-
-    assert(fabs(res[1] + 1E-10) < 1E-9);
-    assert(fabs(res[2] - 1E+10) < 1E-9);
+    assert(solve_equation(a, b, c, eps, &res) == 2);
+    assert(fabs(res[0] + 1E-10) < 1E-11);
+    assert(fabs(res[1] - 1E+10) < 1E-11);
+    free(res);
 }
 
-void test_7()
+void eps_test3()
 {
     double a = 1;
     double b = 0;
     double c = -1e-8;
-    double eps_a = 1E-5;
-    double eps_D = 1E-7;
+    double eps = 1E-7;
+    double *res;
 
-    double *res = solve_equation(a, b, c, eps_a, eps_D);
-
-    assert(res[0] == 1);
-
-    assert(fabs(res[1]) < 1E-7);
+    assert(solve_equation(a, b, c, eps, &res) == 1);
+    assert(fabs(res[0]) < 1E-7);
+    free(res);
 }
 
 int main()
 {
-    test_1();
-    test_2();
-    test_3();
-    test_4();
-    test_5();
-    test_6();
-    test_7();
+    zero_a_test();
+    two_roots_test();
+    one_root_test();
+    no_roots_test();
+    eps_test1();
+    eps_test2();
+    eps_test3();
 }
