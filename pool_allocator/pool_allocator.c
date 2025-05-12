@@ -9,11 +9,12 @@ void init_allocator(pool_allocator *allocator, int block_size, int blocks_amount
     allocator->used_blocks_amount = 0;
     allocator->free_blocks = NULL;
 
-    allocator->allocated_memory = (char *)malloc((block_size + sizeof(block)) * blocks_amount);
+    allocator->allocated_memory = (char *)malloc((block_size + sizeof(struct block)) * blocks_amount);
 
     for (size_t i = 0; i < blocks_amount; i++)
     {
-        block *current_block = (block *)(allocator->allocated_memory + i * (block_size + sizeof(block)));
+        struct block *current_block =
+            (struct block *)(allocator->allocated_memory + i * (block_size + sizeof(struct block)));
         current_block->next = allocator->free_blocks;
         allocator->free_blocks = current_block;
     }
@@ -26,7 +27,7 @@ void *pool_alloc(pool_allocator *allocator)
         return NULL;
     }
 
-    block *block = allocator->free_blocks;
+    struct block *block = allocator->free_blocks;
     allocator->free_blocks = block->next;
 
     allocator->free_blocks_amount--;
@@ -37,7 +38,7 @@ void *pool_alloc(pool_allocator *allocator)
 
 void pool_free(pool_allocator *allocator, void *ptr)
 {
-    block *current_block = (block *)ptr;
+    struct block *current_block = (struct block *)ptr;
     current_block->next = allocator->free_blocks;
     allocator->free_blocks = current_block;
     allocator->free_blocks_amount++;

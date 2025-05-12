@@ -1,4 +1,4 @@
-typedef struct
+typedef struct block
 {
     struct block *next;
 } block;
@@ -9,7 +9,7 @@ typedef struct
     int block_size;
     int free_blocks_amount;
     int used_blocks_amount;
-    block *free_blocks;
+    struct block *free_blocks;
 } pool_allocator;
 
 void init_allocator(pool_allocator *allocator, int block_size, int blocks_amount);
