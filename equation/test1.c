@@ -10,7 +10,7 @@ void zero_a_test()
     double eps = 1E-7;
     double *res;
 
-    assert(solve_equation(a, b, c, eps, &res) == -1);
+    assert(solve_equation(a, b, c, eps, &res) == A_EQUALS_ZERO);
 }
 
 void two_roots_test()
@@ -21,7 +21,7 @@ void two_roots_test()
     double eps = 1E-7;
     double *res;
 
-    assert(solve_equation(a, b, c, eps, &res) == 2);
+    assert(solve_equation(a, b, c, eps, &res) == TWO_ROOTS);
     assert(res[0] == -1);
     assert(res[1] == 1);
     free(res);
@@ -35,7 +35,7 @@ void one_root_test()
     double eps = 1E-7;
     double *res;
 
-    assert(solve_equation(a, b, c, eps, &res) == 1);
+    assert(solve_equation(a, b, c, eps, &res) == ONE_ROOT);
     assert(res[0] == 0);
     free(res);
 }
@@ -48,7 +48,7 @@ void no_roots_test()
     double eps = 1E-7;
     double *res;
 
-    assert(solve_equation(a, b, c, eps, &res) == 0);
+    assert(solve_equation(a, b, c, eps, &res) == NO_ROOTS);
 }
 
 void eps_test1()
@@ -59,7 +59,7 @@ void eps_test1()
     double eps = 1E-7;
     double *res = NULL;
 
-    assert(solve_equation(a, b, c, eps, &res) == 2);
+    assert(solve_equation(a, b, c, eps, &res) == TWO_ROOTS);
     assert(fabs(res[0] + 3E-4) < 0.0001);
     assert(fabs(res[1] - 3E-4) < 0.0001);
     free(res);
@@ -73,7 +73,7 @@ void eps_test2()
     double eps = 1E-7;
     double *res;
 
-    assert(solve_equation(a, b, c, eps, &res) == 2);
+    assert(solve_equation(a, b, c, eps, &res) == TWO_ROOTS);
     assert(fabs(res[0] + 1E-10) < 1E-11);
     assert(fabs(res[1] - 1E+10) < 1E-11);
     free(res);
@@ -87,7 +87,7 @@ void eps_test3()
     double eps = 1E-7;
     double *res;
 
-    assert(solve_equation(a, b, c, eps, &res) == 1);
+    assert(solve_equation(a, b, c, eps, &res) == ONE_ROOT);
     assert(fabs(res[0]) < 1E-7);
     free(res);
 }

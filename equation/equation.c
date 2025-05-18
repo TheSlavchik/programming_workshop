@@ -13,16 +13,11 @@ int solve_equation(double a, double b, double c, double eps, double **res)
 
     D = pow(b, 2) - 4 * a * c;
 
-    if (fabs(D) < eps)
-    {
-        D = 0;
-    }
-
-    if (D < 0)
+    if (D < -eps)
     {
         return NO_ROOTS;
     }
-    else if (D == 0)
+    else if (fabs(D) < eps)
     {
         x1 = -b / (2 * a);
 
