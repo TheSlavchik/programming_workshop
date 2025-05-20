@@ -21,7 +21,22 @@ pool_allocator.a: pool_allocator.o
 pool_allocator_test: pool_allocator_test.o pool_allocator.a
 	gcc -g -static -o pool_allocator_test pool_allocator_test.o pool_allocator.a -lm
 
+# [ARRAY LIST]
+
+array_list_test.o: array_list/array_list_test.c
+	gcc -g -c array_list/array_list_test.c -o array_list_test.o
+
+array_list.o: array_list/array_list.c array_list/array_list.h
+	gcc -g -c array_list/array_list.c -o array_list.o
+
+array_list.a: array_list.o
+	ar rc array_list.a array_list.o
+
+array_list_test: array_list_test.o array_list.a pool_allocator.a
+	gcc -g -static -o array_list_test array_list_test.o array_list.a pool_allocator.a -lm
+
 # [TEST]
 
-test: pool_allocator_test
+test: pool_allocator_test array_list_test
 	./pool_allocator_test
+	./array_list_test
