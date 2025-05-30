@@ -1,8 +1,8 @@
 #define HASH_TABLE_H
 #include "../pool_allocator/pool_allocator.h"
+#include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stddef.h>
 
 typedef struct hash_table_entry
 {
