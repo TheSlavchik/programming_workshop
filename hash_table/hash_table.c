@@ -1,75 +1,90 @@
 #include "hash_table.h"
 
-static unsigned long hash_function(const char *key, size_t capacity)
+static long hash_function(const char *key, size_t capacity)
 {
     long hash = 7401;
     int c;
-    while ((c = *key++))
+    while (c = *key++)
     {
         hash = ((hash << 5) + hash) + c;
     }
     return hash % capacity;
 }
 
-void hash_table_init(hash_table *table, size_t capacity, pool_allocator *allocator)
+int hash_table_init(hash_table *table, size_t capacity, pool_allocator *allocator)
 {
     table->capacity = capacity;
     table->allocator = allocator;
     table->buckets = (hash_table_entry **)calloc(capacity, sizeof(hash_table_entry *));
+
     if (!table->buckets)
     {
-        exit(EXIT_FAILURE);
+        return MEMORY_ALLOCATION_ERROR;
     }
+
+    return 0;
 }
 
 int hash_table_insert(hash_table *table, const char *key, void *value)
 {
-    if (!key || !value)
-        return -1;
+    if (!key)
+    {
+        return NULL_KEY;
+    }
 
-    unsigned long index = hash_function(key, table->capacity);
+    long index = hash_function(key, table->capacity);
     hash_table_entry *entry = (hash_table_entry *)pool_alloc(table->allocator);
+
     if (!entry)
-        return -1;
+    {
+        return MEMORY_ALLOCATION_ERROR;
+    }
 
     entry->key = strdup(key);
     if (!entry->key)
     {
         pool_free(table->allocator, entry);
-        return -1;
+        return MEMORY_ALLOCATION_ERROR;
     }
 
     entry->value = value;
     entry->next = table->buckets[index];
     table->buckets[index] = entry;
+
     return 0;
 }
 
-void *hash_table_get(hash_table *table, const char *key)
+int hash_table_get(hash_table *table, const char *key, void **result)
 {
     if (!key)
-        return NULL;
+    {
+        return NULL_KEY;
+    }
 
-    unsigned long index = hash_function(key, table->capacity);
+    long index = hash_function(key, table->capacity);
     hash_table_entry *entry = table->buckets[index];
 
     while (entry)
     {
         if (strcmp(entry->key, key) == 0)
         {
-            return entry->value;
+            *result = entry->value;
+            return 0;
         }
         entry = entry->next;
     }
-    return NULL;
+
+    return KEY_NOT_FOUND;
 }
 
-void hash_table_delete(hash_table *table, const char *key)
+int hash_table_delete(hash_table *table, const char *key)
 {
     if (!key)
-        return;
+    {
+        return NULL_KEY;
+    }
 
-    unsigned long index = hash_function(key, table->capacity);
+    long index = hash_function(key, table->capacity);
     hash_table_entry **entry_ptr = &table->buckets[index];
 
     while (*entry_ptr)
@@ -80,10 +95,12 @@ void hash_table_delete(hash_table *table, const char *key)
             *entry_ptr = entry->next;
             free(entry->key);
             pool_free(table->allocator, entry);
-            return;
+            return 0;
         }
         entry_ptr = &(*entry_ptr)->next;
     }
+
+    return 0;
 }
 
 void hash_table_free(hash_table *table)
@@ -99,5 +116,6 @@ void hash_table_free(hash_table *table)
             entry = next;
         }
     }
+
     free(table->buckets);
 }

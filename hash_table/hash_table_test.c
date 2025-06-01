@@ -7,10 +7,10 @@
 void test_init_free()
 {
     pool_allocator allocator;
-    init_allocator(&allocator, 10, sizeof(struct hash_table_entry));
+    init_allocator(&allocator, sizeof(struct hash_table_entry), 10);
 
     hash_table table;
-    hash_table_init(&table, 5, &allocator);
+    assert(hash_table_init(&table, 5, &allocator) == 0);
 
     assert(table.capacity == 5);
     assert(table.allocator == &allocator);
@@ -21,32 +21,35 @@ void test_init_free()
 void test_insert_get()
 {
     pool_allocator allocator;
-    init_allocator(&allocator, 10, sizeof(struct hash_table_entry));
+    init_allocator(&allocator, 32, 10);
     hash_table table;
     hash_table_init(&table, 5, &allocator);
 
     int value = 42;
+    assert(hash_table_insert(&table, NULL, &value) == NULL_KEY);
     assert(hash_table_insert(&table, "key1", &value) == 0);
 
-    int *retrieved = (int *)hash_table_get(&table, "key1");
+    int *retrieved;
+    hash_table_get(&table, "key1", (void **)&retrieved);
     assert(retrieved != NULL);
-    assert(*retrieved == 42);
-    printf("%d\n", *retrieved);
+    assert(retrieved[0] == 42);
     hash_table_free(&table);
 }
 
 void test_delete()
 {
     pool_allocator allocator;
-    init_allocator(&allocator, 10, sizeof(struct hash_table_entry));
+    init_allocator(&allocator, sizeof(struct hash_table_entry), 10);
     hash_table table;
     hash_table_init(&table, 5, &allocator);
 
     int value = 100;
+    int *retrieved;
     hash_table_insert(&table, "key1", &value);
 
     hash_table_delete(&table, "key1");
-    assert(hash_table_get(&table, "key1") == NULL);
+    assert(hash_table_delete(&table, NULL) == NULL_KEY);
+    assert(hash_table_get(&table, "key1", (void **)&retrieved) == KEY_NOT_FOUND);
 
     hash_table_free(&table);
 }
@@ -54,7 +57,7 @@ void test_delete()
 void test_collisions()
 {
     pool_allocator allocator;
-    init_allocator(&allocator, 20, sizeof(struct hash_table_entry));
+    init_allocator(&allocator, sizeof(struct hash_table_entry), 20);
     hash_table table;
     hash_table_init(&table, 1, &allocator);
 
@@ -63,16 +66,17 @@ void test_collisions()
     {
         char key[10];
         sprintf(key, "key%d", i);
-        assert(hash_table_insert(&table, key, &values[i]) == 0);
+        assert(hash_table_insert(&table, key, (void **)&values[i]) == 0);
     }
 
     for (int i = 0; i < 5; i++)
     {
         char key[10];
         sprintf(key, "key%d", i);
-        int *val = (int *)hash_table_get(&table, key);
+        int *val;
+        hash_table_get(&table, key, (void **)&val);
         assert(val != NULL);
-        assert(*val == i + 1);
+        assert(val[0] == i + 1);
     }
 
     hash_table_free(&table);
@@ -81,62 +85,17 @@ void test_collisions()
 void test_allocator_overflow()
 {
     pool_allocator allocator;
-    init_allocator(&allocator, 2, sizeof(hash_table_entry));
+    init_allocator(&allocator, sizeof(struct hash_table_entry), 2);
 
     hash_table table;
     hash_table_init(&table, 5, &allocator);
 
     int v1 = 1, v2 = 2, v3 = 3;
+    int *retrieved;
     hash_table_insert(&table, "key1", &v1);
     hash_table_insert(&table, "key2", &v2);
-    hash_table_insert(&table, "key3", &v3);
-
-    // assert(hash_table_get(&table, "key3") == NULL);
-}
-
-void test_large_volume()
-{
-    const size_t LARGE_SIZE = 1000;
-    pool_allocator allocator;
-    init_allocator(&allocator, LARGE_SIZE, sizeof(struct hash_table_entry));
-
-    hash_table table;
-    hash_table_init(&table, 128, &allocator);
-
-    for (int i = 0; i < LARGE_SIZE; i++)
-    {
-        char key[20];
-        sprintf(key, "key_%d", i);
-        int *value = malloc(sizeof(int));
-        assert(value != NULL);
-        *value = i;
-        // assert(hash_table_insert(&table, key, value) == 0);
-    }
-
-    for (int i = 0; i < LARGE_SIZE; i++)
-    {
-        char key[20];
-        sprintf(key, "key_%d", i);
-        int *val = (int *)hash_table_get(&table, key);
-        // assert(val != NULL);
-        assert(*val == i);
-    }
-
-    for (int i = 0; i < LARGE_SIZE; i += 2)
-    {
-        char key[20];
-        sprintf(key, "key_%d", i);
-        hash_table_delete(&table, key);
-    }
-
-    for (int i = 1; i < LARGE_SIZE; i += 2)
-    {
-        char key[20];
-        sprintf(key, "key_%d", i);
-        assert(hash_table_get(&table, key) != NULL);
-    }
-
-    hash_table_free(&table);
+    assert(hash_table_insert(&table, "key3", &v3) == MEMORY_ALLOCATION_ERROR);
+    assert(hash_table_get(&table, "key3", (void **)&retrieved) == KEY_NOT_FOUND);
 }
 
 int main()
@@ -146,8 +105,5 @@ int main()
     test_delete();
     test_collisions();
     test_allocator_overflow();
-    // test_large_volume();
-
-    printf("All tests passed successfully!\n");
     return 0;
 }
