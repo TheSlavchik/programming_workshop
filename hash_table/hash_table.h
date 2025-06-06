@@ -18,9 +18,10 @@ typedef struct
     hash_table_entry **buckets;
     size_t capacity;
     pool_allocator *allocator;
+    size_t item_size;
 } hash_table;
 
-int hash_table_init(hash_table *table, size_t capacity, pool_allocator *allocator);
+int hash_table_init(hash_table *table, size_t capacity, pool_allocator *allocator, size_t item_size);
 int hash_table_insert(hash_table *table, const char *key, void *value);
 int hash_table_get(hash_table *table, const char *key, void **result);
 int hash_table_delete(hash_table *table, const char *key);

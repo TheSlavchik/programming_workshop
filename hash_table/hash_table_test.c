@@ -10,7 +10,7 @@ void test_init_free()
     init_allocator(&allocator, sizeof(struct hash_table_entry), 10);
 
     hash_table table;
-    assert(hash_table_init(&table, 5, &allocator) == 0);
+    assert(hash_table_init(&table, 5, &allocator, sizeof(int)) == 0);
 
     assert(table.capacity == 5);
     assert(table.allocator == &allocator);
@@ -23,12 +23,11 @@ void test_insert_get()
     pool_allocator allocator;
     init_allocator(&allocator, 32, 10);
     hash_table table;
-    hash_table_init(&table, 5, &allocator);
+    hash_table_init(&table, 5, &allocator, sizeof(int));
 
     int value = 42;
     assert(hash_table_insert(&table, NULL, &value) == NULL_KEY);
     assert(hash_table_insert(&table, "key1", &value) == 0);
-
     int *retrieved;
     hash_table_get(&table, "key1", (void **)&retrieved);
     assert(retrieved != NULL);
@@ -41,7 +40,7 @@ void test_delete()
     pool_allocator allocator;
     init_allocator(&allocator, sizeof(struct hash_table_entry), 10);
     hash_table table;
-    hash_table_init(&table, 5, &allocator);
+    hash_table_init(&table, 5, &allocator,sizeof(int));
 
     int value = 100;
     int *retrieved;
@@ -59,7 +58,7 @@ void test_collisions()
     pool_allocator allocator;
     init_allocator(&allocator, sizeof(struct hash_table_entry), 20);
     hash_table table;
-    hash_table_init(&table, 1, &allocator);
+    hash_table_init(&table, 1, &allocator, sizeof(int));
 
     int values[5] = {1, 2, 3, 4, 5};
     for (int i = 0; i < 5; i++)
@@ -88,7 +87,7 @@ void test_allocator_overflow()
     init_allocator(&allocator, sizeof(struct hash_table_entry), 2);
 
     hash_table table;
-    hash_table_init(&table, 5, &allocator);
+    hash_table_init(&table, 5, &allocator, sizeof(int));
 
     int v1 = 1, v2 = 2, v3 = 3;
     int *retrieved;

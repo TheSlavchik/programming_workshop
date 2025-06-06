@@ -1,4 +1,5 @@
 #include "hash_table.h"
+#include <stdio.h>
 
 static long hash_function(const char *key, size_t capacity)
 {
@@ -11,11 +12,12 @@ static long hash_function(const char *key, size_t capacity)
     return hash % capacity;
 }
 
-int hash_table_init(hash_table *table, size_t capacity, pool_allocator *allocator)
+int hash_table_init(hash_table *table, size_t capacity, pool_allocator *allocator, size_t item_size)
 {
     table->capacity = capacity;
     table->allocator = allocator;
     table->buckets = (hash_table_entry **)calloc(capacity, sizeof(hash_table_entry *));
+    table->item_size = item_size;
 
     if (!table->buckets)
     {
@@ -47,7 +49,8 @@ int hash_table_insert(hash_table *table, const char *key, void *value)
         return MEMORY_ALLOCATION_ERROR;
     }
 
-    entry->value = value;
+    entry->value = pool_alloc(table->allocator);
+    memcpy(entry->value, value, table->item_size);
     entry->next = table->buckets[index];
     table->buckets[index] = entry;
 
