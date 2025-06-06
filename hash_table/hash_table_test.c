@@ -40,7 +40,7 @@ void test_delete()
     pool_allocator allocator;
     init_allocator(&allocator, sizeof(struct hash_table_entry), 10);
     hash_table table;
-    hash_table_init(&table, 5, &allocator,sizeof(int));
+    hash_table_init(&table, 5, &allocator, sizeof(int));
 
     int value = 100;
     int *retrieved;
