@@ -25,3 +25,4 @@ pool_allocator_test: pool_allocator_test.o pool_allocator.a
 
 test: pool_allocator_test
 	./pool_allocator_test
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --error-exitcode=1 ./pool_allocator_test
