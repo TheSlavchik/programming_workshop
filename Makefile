@@ -1,15 +1,23 @@
-clear: 
+clear:
 	rm -rf *.o *.a *_test *.gch 
 
-fmt: 
+fmt:
 	clang-format -style=Microsoft -i `find -regex ".+\.[ch]"`
 
 check_fmt:
-	clang-format -style=Microsoft -i `find -regex ".+\.[ch]"` --dry-run --Werror
+	clang-format -style=Microsoft --dry-run --Werror `find -regex ".+\.[ch]"`
 
-test: 
-	@if [ -z "$(wildcard *_test)" ]; then \
-		echo "No '_test' found."; \
-	else \
-		for binary in $(wildcard *_test); do ./$$binary; done; fi
-		
+linear_allocator_test.o: linear_allocator/linear_allocator_test.c
+	gcc -g -c linear_allocator/linear_allocator_test.c -o linear_allocator_test.o
+
+linear_allocator.o: linear_allocator/linear_allocator.c linear_allocator/linear_allocator.h
+	gcc -g -c linear_allocator/linear_allocator.c -o linear_allocator.o 
+
+linear_allocator.a: linear_allocator.o
+	ar rc linear_allocator.a linear_allocator.o
+
+linear_allocator_test: linear_allocator_test.o linear_allocator.a
+	gcc -g -static -o linear_allocator_test linear_allocator_test.o linear_allocator.a -lm
+
+test: linear_allocator_test
+	./linear_allocator_test
