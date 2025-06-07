@@ -21,4 +21,3 @@ linear_allocator_test: linear_allocator_test.o linear_allocator.a
 
 test: linear_allocator_test
 	./linear_allocator_test
-	
