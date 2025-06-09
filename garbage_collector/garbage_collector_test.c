@@ -107,6 +107,57 @@ void default_destructor_constructor_test()
     gc_decrease(ref_counter, allocator);
     pool_destroy(allocator);
 }
+void create_cycle_reference_test()
+{
+    pool_allocator *allocator = (pool_allocator *)malloc(sizeof(pool_allocator));
+    init_allocator(allocator, sizeof(ref_count_t), 10);
+    assert(allocator != NULL);
+    cycle_object *obj1 = create_cycle_object(allocator);
+    cycle_object *obj2 = create_cycle_object(allocator);
+    assert(obj1 != NULL);
+    assert(obj2 != NULL);
+    assert(obj1->gc != NULL);
+    assert(obj2->gc != NULL);
+    assert(obj1->gc->count == 1);
+    assert(obj2->gc->count == 1);
+    create_cycle_reference(obj1, obj2);
+    assert(obj1->ref_to == obj2);
+    assert(obj2->ref_to == obj1);
+    assert(obj1->gc->count == 2);
+    assert(obj2->gc->count == 2);
+    assert(detected_cycle(obj1) == 1);
+    assert(detected_cycle(obj2) == 1);
+    delete_cycle(allocator, obj1);
+    pool_destroy(allocator);
+}
+
+void detected_cycle_test()
+{
+    pool_allocator *allocator = (pool_allocator *)malloc(sizeof(pool_allocator));
+    init_allocator(allocator, sizeof(ref_count_t), 10);
+    assert(allocator != NULL);
+    cycle_object *obj1 = create_cycle_object(allocator);
+    cycle_object *obj2 = create_cycle_object(allocator);
+    cycle_object *obj3 = create_cycle_object(allocator);
+    assert(obj1 != NULL);
+    assert(obj2 != NULL);
+    assert(obj3 != NULL);
+    obj1->ref_to = obj2;
+    gc_increase(obj2->gc);
+    obj2->ref_to = obj3;
+    gc_increase(obj3->gc);
+    obj3->ref_to = obj1;
+    gc_increase(obj1->gc);
+    assert(detected_cycle(obj1) == 1);
+    assert(detected_cycle(obj2) == 1);
+    assert(detected_cycle(obj3) == 1);
+    cycle_object *obj4 = create_cycle_object(allocator);
+    assert(obj4 != NULL);
+    assert(detected_cycle(obj4) == 0);
+    delete_cycle(allocator, obj1);
+    gc_decrease(obj4->gc, allocator);
+    pool_destroy(allocator);
+}
 
 int main()
 {
@@ -115,6 +166,7 @@ int main()
     decrease_reference_test();
     custom_destructor_constructor_test();
     default_destructor_constructor_test();
-
+    create_cycle_reference_test();
+    detected_cycle_test();
     return 0;
 }
