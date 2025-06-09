@@ -1,8 +1,16 @@
 #include "garbage_collector.h"
 
-ref_count_t *gc_init(void *obj, pool_allocator *allocator)
+void default_destructor(void *object, pool_allocator *allocator)
 {
-    if (obj == NULL || allocator == NULL)
+    if (object)
+    {
+        pool_free(allocator, object);
+    }
+}
+
+ref_count_t *gc_init(void *obj, pool_allocator *allocator, constructor constructor, deconstructor destructor)
+{
+    if (allocator == NULL)
     {
         return NULL;
     }
@@ -15,7 +23,32 @@ ref_count_t *gc_init(void *obj, pool_allocator *allocator)
     }
 
     rc->count = 1;
-    rc->object = obj;
+
+    rc->constructor = constructor;
+
+    if (constructor)
+    {
+        rc->object = constructor(allocator);
+        if (rc->object == NULL)
+        {
+            pool_free(allocator, rc);
+            return NULL;
+        }
+    }
+    else
+    {
+        rc->object = obj;
+    }
+
+    if (destructor)
+    {
+        rc->destructor = destructor;
+    }
+    else
+    {
+        rc->destructor = default_destructor;
+    }
+
     return rc;
 }
 
@@ -34,13 +67,11 @@ void gc_decrease(ref_count_t *rc, pool_allocator *allocator)
         rc->count--;
         if (rc->count == 0)
         {
-            if (rc->object == NULL)
+            if (rc->destructor)
             {
-                pool_free(allocator, rc);
-                return;
+                rc->destructor(rc->object, allocator);
             }
 
-            pool_free(allocator, rc->object);
             pool_free(allocator, rc);
         }
     }
