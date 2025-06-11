@@ -19,9 +19,12 @@ pool_allocator.a: pool_allocator.o
 	ar rc pool_allocator.a pool_allocator.o
 
 pool_allocator_test: pool_allocator_test.o pool_allocator.a
-	gcc -g -static -o pool_allocator_test pool_allocator_test.o pool_allocator.a -lm
+	gcc -g -o pool_allocator_test pool_allocator_test.o pool_allocator.a -lm
 
 # [TEST]
 
 test: pool_allocator_test
 	./pool_allocator_test
+	@for tests in $^; do \
+		valgrind --leak-check=full --track-origins=yes ./$$tests; \
+	done
