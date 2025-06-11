@@ -25,4 +25,6 @@ pool_allocator_test: pool_allocator_test.o pool_allocator.a
 
 test: pool_allocator_test
 	./pool_allocator_test
-	valgrind --leak-check=full --track-origins=yes ./pool_allocator_test
+	@for tests in $^; do \
+		valgrind --leak-check=full --track-origins=yes ./$$tests; \
+	done
